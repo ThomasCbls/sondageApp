@@ -13,8 +13,11 @@ export class SondageService {
   constructor(
     @InjectRepository(Sondage)
     private sondageRepo: Repository<Sondage>,
+
     @InjectRepository(SondageOption)
     private optionRepo: Repository<SondageOption>,
+
+    @InjectRepository(Vote)
     private voteRepo: Repository<Vote>,
   ) {}
 

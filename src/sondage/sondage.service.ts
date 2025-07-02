@@ -72,4 +72,17 @@ export class SondageService {
   async getAll(): Promise<Sondage[]> {
     return this.sondageRepo.find();
   }
+
+    async getById(id: number): Promise<Sondage> {
+    const sondage = await this.sondageRepo.findOne({
+      where: { id },
+      relations: ['options'], // si tu veux les options avec
+    });
+
+    if (!sondage) {
+      throw new NotFoundException(`Sondage avec l'id ${id} non trouvé`);
+    }
+
+    return sondage;
+  }
 }

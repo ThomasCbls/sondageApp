@@ -12,5 +12,5 @@ export class Vote {
 
   @Column()
   @IsString()
-  userIdentifier: string; // Peut être une IP ou un UUID stocké côté frontend
+  userIdentifier: string;
 }

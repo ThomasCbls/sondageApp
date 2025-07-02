@@ -5,6 +5,7 @@ import { SondageOption } from './sondage/entities/sondage_option.entity';
 import { Vote } from './sondage/entities/vote.entity';
 import { User } from './auth/user.entity';
 import { SondageModule } from './sondage/sondage.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SondageModule } from './sondage/sondage.module';
     }),
     TypeOrmModule.forFeature([Sondage, SondageOption, Vote, User]),
     SondageModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

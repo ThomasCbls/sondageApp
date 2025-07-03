@@ -20,6 +20,9 @@ export class Sondage {
   @IsBoolean()
   multipleAnswers: boolean;
 
+  @Column({ default: false }) // 👈 Nouveau champ
+  isClosed: boolean;
+
   @OneToMany(() => SondageOption, (option) => option.poll, {
     cascade: true,
     eager: true,

@@ -46,7 +46,10 @@ async vote(sondageId: number, voteDto: VoteDto, user: { userId: number; username
       throw new NotFoundException('Sondage non trouvé');
     }
 
-    // Si réponse multiple non autorisée
+    if (sondage.isClosed) {
+      throw new BadRequestException('Ce sondage est clôturé. Le vote est impossible.');
+    }
+
     if (!sondage.multipleAnswers && voteDto.optionIds.length > 1) {
       throw new BadRequestException('Ce sondage n’autorise qu’un seul vote');
     }
@@ -84,4 +87,45 @@ async vote(sondageId: number, voteDto: VoteDto, user: { userId: number; username
 
     return sondage;
   }
+
+  async closeSondage(id: number): Promise<Sondage> {
+  const sondage = await this.sondageRepo.findOne({ where: { id } });
+
+  if (!sondage) {
+    throw new NotFoundException('Sondage non trouvé');
+  }
+
+  sondage.isClosed = true;
+  return this.sondageRepo.save(sondage);
+}
+
+  async getStats(id: number) {
+    const sondage = await this.sondageRepo.findOne({
+      where: { id },
+      relations: ['options', 'options.votes'],
+    });
+
+    if (!sondage) {
+      throw new NotFoundException('Sondage non trouvé');
+    }
+
+    const results = sondage.options.map((option) => ({
+      optionId: option.id,
+      text: option.text,
+      votes: option.votes?.length || 0,
+    }));
+
+    return {
+      sondageId: sondage.id,
+      title: sondage.title,
+      isClosed: sondage.isClosed,
+      totalVotes: results.reduce((acc, curr) => acc + curr.votes, 0),
+      options: results,
+    };
+  }
+
+  async deleteSondage(id: number): Promise<void> {
+    await this.sondageRepo.delete(id);
+  }
+
 }

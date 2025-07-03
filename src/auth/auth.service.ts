@@ -26,7 +26,8 @@ export class AuthService {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return null;
 
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.username, isAdmin: user.isAdmin };
     return this.jwtService.sign(payload);
   }
+
 }

@@ -36,7 +36,7 @@ export class SondageService {
     return this.sondageRepo.save(sondage);
   }
 
-    async vote(sondageId: number, voteDto: VoteDto) {
+async vote(sondageId: number, voteDto: VoteDto, user: { userId: number; username: string }) {
     const sondage = await this.sondageRepo.findOne({
       where: { id: sondageId },
       relations: ['options'],
@@ -59,13 +59,12 @@ export class SondageService {
       }
     }
 
-    // Créer les votes
-    const votes = voteDto.optionIds.map((id) => {
-      const vote = new Vote();
-      vote.option = { id } as any;
-      return vote;
-    });
-
+ const votes = voteDto.optionIds.map((id) => {
+    const vote = new Vote();
+    vote.option = { id } as any;
+    vote.userIdentifier = user.username;
+    return vote;
+  });
     return this.voteRepo.save(votes);
   }
 
